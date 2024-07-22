@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id      Int @id @default(autoincrement())
+  username    String @unique
+  password String
+  Orders  Order[]
+  Crypto  Crypto[]
+}
+
+model Order{
+   orderId   Int      @id @default(autoincrement())
+   user  User @relation(fields: [userId], references: [id])
+   userId  Int
+   amount  String
+   status  String
+   Crypto  Crypto @relation(fields: [CryptoId], references: [id])
+   CryptoId Int
+}
+
+
+model Crypto{
+  id              Int @id @default(autoincrement())
+  name            String
+  buyAt           String
+  SoldAt          String?
+  TimeBuyAt       String
+  TimeSoldAt      String?
+  TransactionId   Int @default(autoincrement())
+  TransactionFee  String
+  Orders          Order[]
+  userId          Int
+  user            User @relation(fields: [userId], references: [id])
+}

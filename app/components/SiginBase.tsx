@@ -1,0 +1,59 @@
+'use client'
+import React from 'react'
+import Link from 'next/link';
+import { ToastContainer, toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
+import { Login } from '../(server)/api/Authentication';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
+import { title } from 'process';
+
+
+export default function SignUp() : React.ReactNode {
+    // const [error,setError] = React.useState<string | null>(null);
+    const [loading,setLoading] = React.useState<boolean>(false);    
+    const [data,setData ] = React.useState({username: "" , password : ""});
+    const router = useRouter();
+    const {toast} = useToast();
+    
+    const handleLogin = async()=>{
+      console.log(data.username , "| |" , data.password)
+    const response:any = await Login(data.username, data.password)
+    console.log(response)
+    toast({
+      variant:"default",
+      title: response.response
+    })
+    if(response.status === 200){
+        router.push("/")
+    }
+}
+
+  return (
+    <div className='flex flex-col w-full max-w-sm items-center my-6 gap-6'>
+      <Input type='text'
+       required
+       autoComplete='email@example.com'
+       placeholder='Email' 
+       onChange={(e)=>setData({...data , username: e.target.value})}
+        />         
+      <Input
+       type='password'
+       required
+       placeholder='password' 
+       onChange={(e)=>setData({...data , password: e.target.value})}/>  
+      <Button
+      type='submit'
+      onClick={handleLogin}
+      > {loading ? "...Loading" : "SignIn"}
+       </Button>
+       <div>
+         <p> No account? 
+            <Link href={"/signup"} className='text-blue-600'> SignUp </Link>
+         </p>
+       </div>
+       <ToastContainer/>
+    </div>
+  )
+};
