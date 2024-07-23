@@ -52,7 +52,6 @@ export default function SignUp() : React.ReactNode {
             <Link href={"/signup"} className='text-blue-600'> SignUp </Link>
          </p>
        </div>
-       <ToastContainer/>
     </div>
   )
 };
