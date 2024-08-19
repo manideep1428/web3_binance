@@ -41,14 +41,38 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen bg-black text-white flex-col items-center justify-between">
+    <main className="flex min-h-screen bg-black text-white flex-col items-center justify-between p-4">
       <div className="w-full overflow-x-auto shadow-md sm:rounded-lg">
         {loading ? (
-          <div className="flex justify-center items-center text-xl">
-                     { online ? "... Loading" : "Sorry Your Are Not Connected"      }
-            </div>
+          <div className="flex justify-center items-center text-xl p-4">
+            {online ? "Loading..." : "Sorry, you are not connected"}
+          </div>
         ) : (
-          <table className="w-full text-sm text-left rtl:text-right ">
+          <div className="grid grid-cols-1 gap-4 sm:hidden">
+            {cryptoData.map(eachCrypto => (
+              <div key={eachCrypto.id} onClick={() => handleRedirect(eachCrypto.symbol, eachCrypto.image)}
+                className="bg-gray-900 p-4 rounded-lg hover:bg-gray-800 transition-colors duration-200">
+                <div className="flex items-center gap-3 mb-2">
+                  <Image src={eachCrypto.image} width={30} height={30} alt={eachCrypto.name} />
+                  <span className="font-medium">{eachCrypto.name}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>Price: <span className="font-semibold">${eachCrypto.current_price}</span></div>
+                  <div>24h Change: 
+                    <span className={eachCrypto.price_change_percentage_24h.toString()[0] === "-" ? "text-red-500" : "text-green-500"}>
+                      {eachCrypto.price_change_percentage_24h.toString()[0] === "-" ? "" : "+"}
+                      {eachCrypto.price_change_percentage_24h.toString().slice(0, 5)}%
+                    </span>
+                  </div>
+                  <div>Market Cap: <span className="font-semibold">${formatNumber(eachCrypto.market_cap)}</span></div>
+                  <div>24h Volume: <span className="font-semibold">${formatNumber(eachCrypto.market_cap_change_24h)}</span></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {!loading && (
+          <table className="w-full text-sm text-left rtl:text-right hidden sm:table">
             <thead className="text-xl font-semibold bg-gray-900 uppercase">
               <tr>
                 <th scope="col" className="px-6 py-4">Name</th>
@@ -69,7 +93,7 @@ export default function Home() {
                     </div>
                   </th>
                   <td className="px-6 py-4 text-xl font-semibold">
-                    $ {eachCrypto.current_price}
+                    ${eachCrypto.current_price}
                   </td>
                   <td className="hidden md:table-cell px-6 py-4 text-xl font-semibold">
                     ${formatNumber(eachCrypto.market_cap)}
@@ -91,9 +115,7 @@ export default function Home() {
         )}
       </div>
       <div>
-        {depositPage ? (
-          <Deposit/>
-        ): ""}
+        {depositPage && <Deposit />}
       </div>
     </main>
   );
