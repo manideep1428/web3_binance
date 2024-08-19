@@ -5,10 +5,13 @@ import { BuyCrypto } from "../(server)/api";
 
 export function OrderUI({ market }: {market: string}) {
     const [amount, setAmount] = useState("");
+    const [image , setImage] = useState("");
     const [activeTab, setActiveTab] = useState('buy');
     const [type, setType] = useState('limit');
-    const image = localStorage.getItem("imageUrl") || ""
-
+    if(typeof(window) != undefined ){
+         const image = localStorage.getItem("imageUrl") || ""
+         setImage(image)
+    }
     const hanldeBuyCrypto = async () => {
        const user =  await BuyCrypto( market, amount);
        if(user === "sucess"){
