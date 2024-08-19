@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChartManager } from "../utils/ChartManager";
 import { getKlines } from "../utils/ServerProps";
 import { KLine } from "../utils/types";
@@ -9,16 +9,34 @@ export function TradeView({
   market: string;
 }) {
   const chartRef = useRef<HTMLDivElement>(null);
-  const chartManagerRef = useRef<ChartManager>(null);
+  const chartManagerRef = useRef<ChartManager | null>(null);
+  const [chartHeight, setChartHeight] = useState("520px");
+
+  useEffect(() => {
+    const updateChartDimensions = () => {
+      if (window.innerWidth < 768) { // Adjust this breakpoint as needed
+        setChartHeight("300px"); // Smaller height for mobile
+      } else {
+        setChartHeight("520px"); // Original height for desktop
+      }
+    };
+
+    updateChartDimensions();
+    window.addEventListener('resize', updateChartDimensions);
+
+    return () => window.removeEventListener('resize', updateChartDimensions);
+  }, []);
 
   useEffect(() => {
     const init = async () => {
       let klineData: KLine[] = [];
       try {
         klineData = await getKlines(market, "1h", Math.floor((new Date().getTime() - 1000 * 60 * 60 * 24 * 7) / 1000), Math.floor(new Date().getTime() / 1000)); 
-      } catch (e) { }
+      } catch (e) { 
+        console.error("Failed to fetch kline data:", e);
+      }
 
-      if (chartRef) {
+      if (chartRef.current) {
         if (chartManagerRef.current) {
           chartManagerRef.current.destroy();
         }
@@ -37,18 +55,36 @@ export function TradeView({
           {
             background: "#0e0f14",
             color: "white",
+            // Add more responsive options here if ChartManager supports them
           }
         );
-        //@ts-ignore
+
         chartManagerRef.current = chartManager;
+
+        // Add resize handler for the chart
+        const handleResize = () => {
+          if (chartManagerRef.current) {
+            chartManagerRef.current;
+          }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
       }
     };
+
     init();
-  }, [market, chartRef]);
+  }, [market]);
 
   return (
-    <>
-      <div ref={chartRef} style={{ height: "520px", width: "100%", marginTop: 4 }}></div>
-    </>
+    <div 
+      ref={chartRef} 
+      style={{ 
+        height: chartHeight, 
+        width: "100%", 
+        marginTop: 4,
+        transition: "height 0.3s ease" // Smooth transition for height changes
+      }}
+    ></div>
   );
 }
