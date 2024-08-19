@@ -30,6 +30,7 @@
     "react-dom": "^18",
     "react-draggable": "^4.4.6",
     "react-query": "^3.39.3",
+    "sharp": "^0.33.5",
     "short-uuid": "^5.2.0",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",

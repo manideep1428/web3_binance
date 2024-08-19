@@ -1,17 +1,13 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BuyCrypto } from "../(server)/api";
 
-export function OrderUI({ market }: {market: string}) {
+export function OrderUI({ market}: {market: string }) {
     const [amount, setAmount] = useState("");
-    const [image , setImage] = useState("");
     const [activeTab, setActiveTab] = useState('buy');
     const [type, setType] = useState('limit');
-    if(typeof window !== undefined ){
-         const image = localStorage.getItem("imageUrl") || ""
-         setImage(image)
-    }
+    const [image, setImage] = useState("");
     const hanldeBuyCrypto = async () => {
        const user =  await BuyCrypto( market, amount);
        if(user === "sucess"){
@@ -22,6 +18,14 @@ export function OrderUI({ market }: {market: string}) {
        }
         
     }
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const image = window.localStorage.getItem("imageUrl");
+            //@ts-ignore
+            setImage(image)
+        }
+    }, []);
+    
     return <div>
         <div className="flex flex-col dark:text-white">
             <div className="flex flex-row h-[60px]">
