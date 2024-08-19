@@ -8,7 +8,7 @@ export function OrderUI({ market }: {market: string}) {
     const [image , setImage] = useState("");
     const [activeTab, setActiveTab] = useState('buy');
     const [type, setType] = useState('limit');
-    if(typeof(window) != undefined ){
+    if(typeof window !== undefined ){
          const image = localStorage.getItem("imageUrl") || ""
          setImage(image)
     }

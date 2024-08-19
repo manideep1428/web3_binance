@@ -5,10 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function getUserLogin(){
-  const userToken = localStorage.getItem("auth-token")
-   if (userToken  !== undefined){
-    return true
-   }
-   return false
+export function getUserLogin() {
+  if (typeof window !== "undefined") {
+    const userToken = window.localStorage.getItem("auth-token");
+    if (userToken !== null) return true;
+    return false;
+  }
+  return false; 
 }
