@@ -1,11 +1,11 @@
-'use server'
-import { AuthProps } from "@/app/utils/types";
-//login route
 import { PrismaClient } from "@prisma/client"
+import { AuthProps } from "@/app/utils/types";
+import { NextRequest, NextResponse } from 'next/server';
 
 const prisma  = new PrismaClient();
 
-export async function Login(username :any, password:any){
+export async function POST(req:NextRequest) {
+    const {username , password } = await req.body
     try {
         const user = await prisma.user.findUnique({
             where:{
@@ -30,4 +30,5 @@ export async function Login(username :any, password:any){
     } catch (error) {
         return error 
     }
+}
 }

@@ -17,16 +17,25 @@ export default function SignUp() : React.ReactNode {
     const {toast} = useToast();
     
     const handleLogin = async()=>{
+     try{
       console.log(data.username , "| |" , data.password)
-    const response:any = await Login(data.username, data.password)
-    console.log(response)
-    toast({
-      variant:"default",
-      title: response.response
-    })
-    if(response.status === 200){
-        router.push("/")
-    }
+      const response:any = await Login(data.username, data.password)
+      console.log(response)
+      toast({
+        variant:"default",
+        title: response.response
+      })
+      if(response.status === 200){
+        localStorage.setItem("auth-token",response.token)
+          router.push("/")
+      }
+     }catch(err){
+      console.log(err)
+      toast({
+        variant:"destructive",
+        title: "Something went wrong"
+      })
+     }
 }
 
   return (

@@ -5,30 +5,32 @@ import { getCrypto } from "./utils/ServerProps";
 import { formatNumber } from "./utils/Algorithms";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Deposit from "./components/Deposit";
 
 export default function Home() {
   const [cryptoData, setCryptoData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [online , setOnline] = useState(navigator.onLine)
+  const [depositPage ,setDepositPage] = useState(false)
   const router = useRouter();
 
   useEffect(() => {
     const fetchAndUpdateCryptoData = async () => {
       const data = await getCrypto();
       setCryptoData((prevData) => {
-        const updatedData = data.map(newItem => {
-          //@ts-ignore
+        const updatedData = data.map((newItem:any) => {
           const existingItem = prevData.find(item => item.id === newItem.id);
-          return existingItem ? { ...existingItem, newItem } : newItem;
+          return existingItem ? { ...existingItem, ...newItem } : newItem;
         });
-        console.log(...updatedData);
+        console.log(updatedData);
         setLoading(false);
-        return [...updatedData];
+        return updatedData;
       });
     };
-
+  
     fetchAndUpdateCryptoData();
-    // const interval = setInterval(fetchAndUpdateCryptoData, 5000);
-    // return () => clearInterval(interval);
+    const interval = setInterval(fetchAndUpdateCryptoData, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleRedirect = (id: string, imageUrl: string) => {
@@ -43,11 +45,11 @@ export default function Home() {
       <div className="w-full overflow-x-auto shadow-md sm:rounded-lg">
         {loading ? (
           <div className="flex justify-center items-center text-xl">
-                           ...  Loading
+                     { online ? "... Loading" : "Sorry Your Are Not Connected"      }
             </div>
         ) : (
-          <table className="w-full text-sm text-left rtl:text-right">
-            <thead className="text-xl font-semibold bg-gray-800 uppercase">
+          <table className="w-full text-sm text-left rtl:text-right ">
+            <thead className="text-xl font-semibold bg-gray-900 uppercase">
               <tr>
                 <th scope="col" className="px-6 py-4">Name</th>
                 <th scope="col" className="px-6 py-4">Price</th>
@@ -59,7 +61,7 @@ export default function Home() {
             <tbody>
               {cryptoData.map(eachCrypto => (
                 <tr key={eachCrypto.id} onClick={() => handleRedirect(eachCrypto.symbol, eachCrypto.image)}
-                  className="border-b border-gray-700 hover:cursor-pointer hover:bg-gray-600 transition-colors duration-200">
+                  className="border-b border-gray-700 hover:cursor-pointer hover:bg-gray-800 transition-colors duration-200">
                   <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <Image src={eachCrypto.image} width={30} height={30} alt={eachCrypto.name} />
@@ -87,6 +89,11 @@ export default function Home() {
             </tbody>
           </table>
         )}
+      </div>
+      <div>
+        {depositPage ? (
+          <Deposit/>
+        ): ""}
       </div>
     </main>
   );
