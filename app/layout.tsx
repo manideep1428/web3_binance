@@ -5,6 +5,7 @@ import { Appbar } from "./components/Appbar";
 import { Inter as FontSans } from "next/font/google"
 import { cn } from "@/lib/utils"
 import DarkModeToggle from "./DarkModeToggle";
+import NextTopLoader from 'nextjs-toploader';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +33,7 @@ export default function RootLayout({
         )}  ${inter.className}`}>
         <Appbar/>
         <DarkModeToggle/>
+        <NextTopLoader height={4} color="#2299DD" />
         {children}
       </body>
     </html>

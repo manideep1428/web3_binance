@@ -6,11 +6,12 @@ import { formatNumber } from "./utils/Algorithms";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Deposit from "./components/Deposit";
+import useOnlineStatus from "@/hooks/onlineChecker";
 
 export default function Home() {
+  const isOnline  = useOnlineStatus();
   const [cryptoData, setCryptoData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [online , setOnline] = useState(navigator.onLine)
   const [depositPage ,setDepositPage] = useState(false)
   const router = useRouter();
 
@@ -45,7 +46,7 @@ export default function Home() {
       <div className="w-full overflow-x-auto shadow-md sm:rounded-lg">
         {loading ? (
           <div className="flex justify-center items-center text-xl p-4">
-            {online ? "Loading..." : "Sorry, you are not connected"}
+            { isOnline ? "Loading......" : "Sorry, you are not connected"}
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:hidden">
