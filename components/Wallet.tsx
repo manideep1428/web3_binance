@@ -2,15 +2,6 @@ import { PrismaClient } from "@prisma/client"
 
 export default async  function OrderDetails(){
         const prisma  = new PrismaClient()
-        const userItems =  prisma.user.findFirst({
-                where:{
-                    id : 1
-                },
-                include:{
-                    Orders : true,
-                    Crypto:true
-                }
-            })
     return(
             <div className="flex flex-col min-h-screen">
             <main className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-8 p-4 sm:p-6">
