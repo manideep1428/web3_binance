@@ -1,7 +1,7 @@
+import { ChartManager } from "@/app/utils/ChartManager";
+import { getKlines } from "@/app/utils/ServerProps";
+import { KLine } from "@/app/utils/types";
 import { useEffect, useRef, useState } from "react";
-import { ChartManager } from "../utils/ChartManager";
-import { getKlines } from "../utils/ServerProps";
-import { KLine } from "../utils/types";
 
 export function TradeView({
   market,

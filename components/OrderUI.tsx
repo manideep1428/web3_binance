@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { BuyCrypto } from "../(server)/api";
+import { BuyCrypto } from "@/app/(server)/api";
 
 export function OrderUI({ market}: {market: string }) {
     const [amount, setAmount] = useState("");

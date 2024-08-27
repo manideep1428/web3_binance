@@ -5,8 +5,10 @@ import { usePathname } from "next/navigation";
 import { PrimaryButton, SignButton, SuccessButton } from "./core/Button"
 import { useRouter } from "next/navigation";
 import { getUserLogin } from "@/lib/utils";
-import { GetAccountDetails } from "./core/AccountDetails";
+import { GetAccountDetails } from "./AccountDetails";
 import { Menu, X, User } from 'lucide-react'; 
+import UserDetails from "./UserDetails";
+import DarkModeToggle from "./DarkModeToggle";
 
 export const Appbar = () => {
     const route = usePathname();
@@ -46,14 +48,15 @@ export const Appbar = () => {
                         Exchange
                     </div>
                     {!isMobile && (
-                        <>
+                        <div className="flex m-auto gap-6 p-4">
                             <NavItem href="/markets">Markets</NavItem>
                             <NavItem href="/trade/SOL_USDC">Trade</NavItem>
-                        </>
+                        </div>
                     )}
                 </div>
                 {isMobile ? (
                     <div className="flex items-center mr-3">
+                        <DarkModeToggle/>
                         {getUserLogin() ? (
                             <div className="mr-2">
                                 <GetAccountDetails/>
@@ -68,11 +71,12 @@ export const Appbar = () => {
                 ) : (
                     <div className="flex flex-row justify-center gap-5">
                         <SuccessButton onClick={handleDeposit}>Deposit</SuccessButton>
+                        <DarkModeToggle/>
                         {getUserLogin() ? (
-                            <>
-                                <PrimaryButton onClick={() => router.push(":id/wallet")}>Wallet</PrimaryButton>
-                                <GetAccountDetails />
-                            </>
+                            <div className="flex m-auto">
+                              <PrimaryButton onClick={() => router.push(":id/wallet")}>Wallet</PrimaryButton>
+                              <UserDetails/>
+                            </div>
                         ) : (
                             <SignButton onClick={() => router.push("/signin")}>SignUp</SignButton>
                         )}

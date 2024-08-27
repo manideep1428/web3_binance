@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getDepth, getKlines, getTicker, getTrades } from "../../utils/ServerProps";
+import { getDepth, getKlines, getTicker, getTrades } from "../../app/utils/ServerProps";
 import { BidTable } from "./BidTable";
 import { AskTable } from "./AskTable";
 import { SignalingManager } from "@/app/utils/SignalingManager";

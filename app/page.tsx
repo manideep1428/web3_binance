@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { getCrypto } from "./utils/ServerProps";
-import { formatNumber } from "./utils/Algorithms";
+import { getCrypto } from "@/app/utils/ServerProps";
+import { formatNumber } from "@/app/utils/Algorithms";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Deposit from "./components/Deposit";
+import Deposit from "@/components/Deposit";
 import useOnlineStatus from "@/hooks/onlineChecker";
 
 export default function Home() {

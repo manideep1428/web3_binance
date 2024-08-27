@@ -1,10 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
-import { MarketBar } from "@/app/components/MarketBar";
-import { OrderUI } from "@/app/components/OrderUI";
-import { TradeView } from "@/app/components/TradeView";
-import { Depth } from "@/app/components/depth/Depth";
+
+import { Depth } from "@/components/depth/Depth";
+import { MarketBar } from "@/components/MarketBar";
+import { OrderUI } from "@/components/OrderUI";
+import { TradeView } from "@/components/TradeView";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Page() {
     const { market } = useParams();

@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import { TickerProps } from "../utils/types";
-import { getTicker } from "../utils/ServerProps";
-import { SignalingManager } from "../utils/SignalingManager";
 import Image from "next/image";
+import { TickerProps } from "@/app/utils/types";
+import { getTicker } from "@/app/utils/ServerProps";
+import { SignalingManager } from "@/app/utils/SignalingManager";
 
 export const MarketBar = ({market}: {market: string}) => {
     const [ticker, setTicker] = useState<TickerProps | null>(null);

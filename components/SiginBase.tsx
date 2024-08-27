@@ -2,14 +2,14 @@
 import React from 'react'
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Login } from '../(server)/api/Authentication';
+import { Login } from '../app/(server)/api/Authentication';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { title } from 'process';
 
 
-export default function SignUp() : React.ReactNode {
+export default function SignIN() : React.ReactNode {
     // const [error,setError] = React.useState<string | null>(null);
     const [loading,setLoading] = React.useState<boolean>(false);    
     const [data,setData ] = React.useState({username: "" , password : ""});
