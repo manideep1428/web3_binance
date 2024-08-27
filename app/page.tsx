@@ -72,7 +72,7 @@ export default function Home() {
           </div>
         )}
         {!loading && (
-          <table className="w-full  text-sm text-left rtl:text-right hidden sm:table dark:border-gray-700 dark:shadow-gray-700 border-gray-300 shadow-gray-300 shadow-lg dark:shadow-lg">
+          <table className="w-full  text-sm text-left rtl:text-right hidden sm:table dark:text-white dark:border-gray-700 dark:shadow-gray-700 border-gray-300 shadow-gray-300 shadow-lg dark:shadow-lg">
             <thead className="text-xl text-black bg-white font-semibold dark:bg-gray-900  uppercase">
               <tr>
                 <th scope="col" className="px-6 py-4">Name</th>
