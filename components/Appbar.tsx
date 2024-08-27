@@ -41,10 +41,10 @@ export const Appbar = () => {
     );
 
     return (
-        <div className="text-white bg-black border-b border-slate-800">
+        <div className="text-black bg-white  dark:text-white dark:bg-black  border-b border-slate-800">
             <div className="flex justify-between items-center p-2">
                 <div className="flex items-center">
-                    <div className="text-xl pl-4 cursor-pointer text-white" onClick={() => router.push('/')}>
+                    <div className="text-xl pl-4 cursor-pointer font-semibold dark:text-white" onClick={() => router.push('/')}>
                         Exchange
                     </div>
                     {!isMobile && (

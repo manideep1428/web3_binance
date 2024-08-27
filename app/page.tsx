@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useEffect, useState } from "react";
 import { getCrypto } from "@/app/utils/ServerProps";
@@ -9,26 +9,25 @@ import Deposit from "@/components/Deposit";
 import useOnlineStatus from "@/hooks/onlineChecker";
 
 export default function Home() {
-  const isOnline  = useOnlineStatus();
+  const isOnline = useOnlineStatus();
   const [cryptoData, setCryptoData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [depositPage ,setDepositPage] = useState(false)
+  const [depositPage, setDepositPage] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     const fetchAndUpdateCryptoData = async () => {
       const data = await getCrypto();
       setCryptoData((prevData) => {
-        const updatedData = data.map((newItem:any) => {
+        const updatedData = data.map((newItem: any) => {
           const existingItem = prevData.find(item => item.id === newItem.id);
           return existingItem ? { ...existingItem, ...newItem } : newItem;
         });
-        console.log(updatedData);
         setLoading(false);
         return updatedData;
       });
     };
-  
+
     fetchAndUpdateCryptoData();
     const interval = setInterval(fetchAndUpdateCryptoData, 10000);
     return () => clearInterval(interval);
@@ -42,17 +41,17 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen bg-black text-white flex-col items-center justify-between p-4">
+    <main className="flex min-h-screen dark:bg-black dark:text-white bg-white text-black flex-col items-center justify-between p-4">
       <div className="w-full overflow-x-auto shadow-md sm:rounded-lg">
         {loading ? (
           <div className="flex justify-center items-center text-xl p-4">
-            { isOnline ? "Loading......" : "Sorry, you are not connected"}
+            {isOnline ? "Loading......" : "Sorry, you are not connected"}
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:hidden">
             {cryptoData.map(eachCrypto => (
               <div key={eachCrypto.id} onClick={() => handleRedirect(eachCrypto.symbol, eachCrypto.image)}
-                className="bg-gray-900 p-4 rounded-lg hover:bg-gray-800 transition-colors duration-200">
+                className="bg-white text-black dark:bg-black p-4 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-800 transition duration-600">
                 <div className="flex items-center gap-3 mb-2">
                   <Image src={eachCrypto.image} width={30} height={30} alt={eachCrypto.name} />
                   <span className="font-medium">{eachCrypto.name}</span>
@@ -73,8 +72,8 @@ export default function Home() {
           </div>
         )}
         {!loading && (
-          <table className="w-full text-sm text-left rtl:text-right hidden sm:table">
-            <thead className="text-xl font-semibold bg-gray-900 uppercase">
+          <table className="w-full  text-sm text-left rtl:text-right hidden sm:table dark:border-gray-700 dark:shadow-gray-700 border-gray-300 shadow-gray-300 shadow-lg dark:shadow-lg">
+            <thead className="text-xl text-black bg-white font-semibold dark:bg-gray-900  uppercase">
               <tr>
                 <th scope="col" className="px-6 py-4">Name</th>
                 <th scope="col" className="px-6 py-4">Price</th>
@@ -86,7 +85,7 @@ export default function Home() {
             <tbody>
               {cryptoData.map(eachCrypto => (
                 <tr key={eachCrypto.id} onClick={() => handleRedirect(eachCrypto.symbol, eachCrypto.image)}
-                  className="border-b border-gray-700 hover:cursor-pointer hover:bg-gray-800 transition-colors duration-200">
+                  className="border-b dark:border-gray-700 border-gray-300 hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200">
                   <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <Image src={eachCrypto.image} width={30} height={30} alt={eachCrypto.name} />
