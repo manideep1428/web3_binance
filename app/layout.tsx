@@ -2,7 +2,7 @@
 import { SessionProvider } from 'next-auth/react'
 import './globals.css'
 import { Appbar } from '@/components/Appbar'
-import DarkModeToggle from './DarkModeToggle'
+import DarkModeToggle from '../components/DarkModeToggle'
 import { ThemeProvider } from './themeProvider'
 export default function RootLayout({
   children,
