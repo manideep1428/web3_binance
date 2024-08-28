@@ -1,6 +1,7 @@
 import { ChartManager } from "@/app/utils/ChartManager";
 import { getKlines } from "@/app/utils/ServerProps";
 import { KLine } from "@/app/utils/types";
+import { error } from "console";
 import { useEffect, useRef, useState } from "react";
 
 export function TradeView({
@@ -14,10 +15,10 @@ export function TradeView({
 
   useEffect(() => {
     const updateChartDimensions = () => {
-      if (window.innerWidth < 768) { // Adjust this breakpoint as needed
-        setChartHeight("300px"); // Smaller height for mobile
+      if (window.innerWidth < 768) { 
+        setChartHeight("300px"); 
       } else {
-        setChartHeight("520px"); // Original height for desktop
+        setChartHeight("520px");
       }
     };
 
@@ -33,7 +34,8 @@ export function TradeView({
       try {
         klineData = await getKlines(market, "1h", Math.floor((new Date().getTime() - 1000 * 60 * 60 * 24 * 7) / 1000), Math.floor(new Date().getTime() / 1000)); 
       } catch (e) { 
-        console.error("Failed to fetch kline data:", e);
+        console.error("Failed to fetch kline data:", e)
+        throw new Error("Failed to fetch kline data");
       }
 
       if (chartRef.current) {
@@ -55,13 +57,11 @@ export function TradeView({
           {
             background: "#0e0f14",
             color: "white",
-            // Add more responsive options here if ChartManager supports them
           }
         );
 
         chartManagerRef.current = chartManager;
 
-        // Add resize handler for the chart
         const handleResize = () => {
           if (chartManagerRef.current) {
             chartManagerRef.current;
@@ -76,6 +76,17 @@ export function TradeView({
     init();
   }, [market]);
 
+  if(!chartRef.current){
+    return (
+      <div className="flex flex-col text-xl font-semibold text-red-500 justify-center items-center h-full">
+        Uable to Connect to Web Socket ,    
+         <div>
+          <i>... Please Try Again  </i>
+         </div>
+      </div>
+    )
+  }
+ 
   return (
     <div 
       ref={chartRef} 
@@ -83,7 +94,7 @@ export function TradeView({
         height: chartHeight, 
         width: "100%", 
         marginTop: 4,
-        transition: "height 0.3s ease" // Smooth transition for height changes
+        transition: "height 0.3s ease" 
       }}
     ></div>
   );
