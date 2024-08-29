@@ -21,13 +21,13 @@ model User {
 }
 
 model Order{
-   orderId   Int      @id @default(autoincrement())
-   user  User @relation(fields: [userId], references: [id])
-   userId  String
-   amount  String
-   status  String
-   Crypto  Crypto @relation(fields: [CryptoId], references: [id])
-   CryptoId Int
+   orderId              String      @id @default(cuid())
+   user                User @relation(fields: [userId], references: [id])
+   userId               String
+   amount               String
+   status               String
+   Crypto               Crypto @relation(fields: [CryptoId], references: [id])
+   CryptoId             Int
 }
 
 
@@ -37,6 +37,7 @@ model Crypto{
   buyAt           String
   SoldAt          String?
   TimeBuyAt       String
+  amount          String
   TimeSoldAt      String?
   TransactionId   Int @default(autoincrement())
   TransactionFee  String
@@ -59,7 +60,6 @@ model Account {
   scope              String?
   id_token           String?  @db.Text
   session_state      String?
-
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])

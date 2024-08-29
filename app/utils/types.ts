@@ -54,7 +54,7 @@ export interface SellProps {
     crypto:string
     amount : string
     soldAt :string
-    userId :number
+    userId : string
 }
 
 export interface AuthProps{

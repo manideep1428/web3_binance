@@ -30,32 +30,32 @@ const handler = NextAuth({
       if(!user.email){
         throw new Error("Email is required")
       }
-      const isUser = prisma.user.upsert({
-        select: {
-          //@ts-ignore
-           email: user.email ,
-           },
-        create:{
-          email: user.email,
-          name: user.name,
-          image: user.image,
-        },
-        update:{
-          name: user.name,
-          image: user.image,
-        }
-      })
       return true 
     },
       async session({ session, token, user }) {
         //@ts-ignore
         session.user.id = token.sub
+        const isUser = prisma.user.upsert({
+          select: {
+            //@ts-ignore
+             id: token.sub ,
+             },
+          create:{
+            email: user.email,
+            name: user.name,
+            image: user.image,
+          },
+          update:{
+            name: user.name,
+            image: user.image,
+          }
+        })
         return session
       },
   },
   pages: {
-    signIn: '/auth/signin',
-    signOut: '/auth/signout',
+    signIn: '/auth/signIn',
+    signOut: '/auth/signOut',
   },
 })
 

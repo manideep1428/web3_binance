@@ -74,28 +74,16 @@ export function TradeView({
     };
 
     init();
-  }, [market]);
-
-  if(!chartRef.current){
-    return (
-      <div className="flex flex-col text-xl font-semibold text-red-500 justify-center items-center h-full">
-        Uable to Connect to Web Socket ,    
-         <div>
-          <i>... Please Try Again  </i>
-         </div>
-      </div>
-    )
-  }
- 
-  return (
-    <div 
-      ref={chartRef} 
-      style={{ 
-        height: chartHeight, 
-        width: "100%", 
-        marginTop: 4,
-        transition: "height 0.3s ease" 
-      }}
-    ></div>
-  );
+  }, [market])
+  return(
+      <div 
+        ref={chartRef} 
+        style={{ 
+          height: chartHeight, 
+          width: "100%", 
+          marginTop: 4,
+          transition: "height 0.3s ease" 
+        }}
+      ></div>
+  )
 }

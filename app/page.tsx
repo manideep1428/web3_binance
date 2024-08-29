@@ -5,14 +5,12 @@ import { getCrypto } from "@/app/utils/ServerProps";
 import { formatNumber } from "@/app/utils/Algorithms";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Deposit from "@/components/Deposit";
 import useOnlineStatus from "@/hooks/onlineChecker";
 
 export default function Home() {
   const isOnline = useOnlineStatus();
   const [cryptoData, setCryptoData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [depositPage, setDepositPage] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -72,50 +70,49 @@ export default function Home() {
           </div>
         )}
         {!loading && (
-          <table className="w-full  text-sm text-left rtl:text-right hidden sm:table dark:text-white dark:border-gray-700 dark:shadow-gray-700 border-gray-300 shadow-gray-300 shadow-lg dark:shadow-lg">
-            <thead className="text-xl text-black bg-white font-semibold dark:bg-gray-900  uppercase">
-              <tr>
-                <th scope="col" className="px-6 py-4">Name</th>
-                <th scope="col" className="px-6 py-4">Price</th>
-                <th scope="col" className="hidden md:table-cell px-6 py-4">Market Cap</th>
-                <th scope="col" className="hidden sm:table-cell px-6 py-4">24 Volume</th>
-                <th scope="col" className="px-6 py-4">24h Change</th>
+          <table className="w-full text-sm text-left hidden sm:table border-2 dark:text-white sm:border-black">
+          <thead className="text-xl bg-white dark:bg-gray-900 dark:text-white font-semibold">
+            <tr>
+              <th scope="col" className="px-6 py-4">Name</th>
+              <th scope="col" className="px-6 py-4">Price</th>
+              <th scope="col" className="hidden md:table-cell px-6 py-4">Market Cap</th>
+              <th scope="col" className="hidden sm:table-cell px-6 py-4">24 Volume</th>
+              <th scope="col" className="px-6 py-4">24h Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cryptoData.map(eachCrypto => (
+              <tr key={eachCrypto.id} onClick={() => handleRedirect(eachCrypto.symbol, eachCrypto.image)}
+                className="border-b border-gray-300 dark:border-gray-700 dark:text-white  hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200">
+                <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap dark:text-white">
+                  <div className="flex items-center gap-3 dark:text-white">
+                    <Image src={eachCrypto.image} width={30} height={30} alt={eachCrypto.name} />
+                    {eachCrypto.name}
+                  </div>
+                </th>
+                <td className="px-6 py-4 text-xl font-semibold text-black dark:text-white">
+                  ${eachCrypto.current_price}
+                </td>
+                <td className="hidden md:table-cell px-6 py-4 text-xl font-semibold dark:text-white">
+                  ${formatNumber(eachCrypto.market_cap)}
+                </td>
+                <td className="hidden sm:table-cell px-6 py-4 text-xl font-semibold">
+                  {formatNumber(eachCrypto.market_cap_change_24h)}
+                </td>
+                <td className="px-6 py-4 text-xl font-semibold">
+                  {eachCrypto.price_change_percentage_24h.toString()[0] === "-" ? (
+                    <span className="text-red-500">{eachCrypto.price_change_percentage_24h.toString().slice(0, 5)}%</span>
+                  ) : (
+                    <span className="text-green-500">+{eachCrypto.price_change_percentage_24h.toString().slice(0, 4)}%</span>
+                  )}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {cryptoData.map(eachCrypto => (
-                <tr key={eachCrypto.id} onClick={() => handleRedirect(eachCrypto.symbol, eachCrypto.image)}
-                  className="border-b dark:border-gray-700 border-gray-300 hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200">
-                  <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap">
-                    <div className="flex items-center gap-3">
-                      <Image src={eachCrypto.image} width={30} height={30} alt={eachCrypto.name} />
-                      {eachCrypto.name}
-                    </div>
-                  </th>
-                  <td className="px-6 py-4 text-xl font-semibold">
-                    ${eachCrypto.current_price}
-                  </td>
-                  <td className="hidden md:table-cell px-6 py-4 text-xl font-semibold">
-                    ${formatNumber(eachCrypto.market_cap)}
-                  </td>
-                  <td className="hidden sm:table-cell px-6 py-4 text-xl font-semibold">
-                    {formatNumber(eachCrypto.market_cap_change_24h)}
-                  </td>
-                  <td className="px-6 py-4 text-xl font-semibold">
-                    {eachCrypto.price_change_percentage_24h.toString()[0] === "-" ? (
-                      <span className="text-red-500">{eachCrypto.price_change_percentage_24h.toString().slice(0, 5)}%</span>
-                    ) : (
-                      <span className="text-green-500">+{eachCrypto.price_change_percentage_24h.toString().slice(0, 4)}%</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>        
         )}
       </div>
       <div>
-        {depositPage && <Deposit />}
       </div>
     </main>
   );

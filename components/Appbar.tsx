@@ -1,20 +1,19 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { PrimaryButton, SignButton, SuccessButton } from "./core/Button"
 import { useRouter } from "next/navigation";
-import { getUserLogin } from "@/lib/utils";
-import { GetAccountDetails } from "./AccountDetails";
-import { Menu, X, User } from 'lucide-react'; 
+import { Menu, X  } from 'lucide-react'; 
 import UserDetails from "./UserDetails";
 import DarkModeToggle from "./DarkModeToggle";
+import { signIn, useSession } from "next-auth/react";
 
 export const Appbar = () => {
     const route = usePathname();
     const router = useRouter();
     const [isMobile, setIsMobile] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const session = useSession();
 
     useEffect(() => {
         const checkIfMobile = () => setIsMobile(window.innerWidth < 768);
@@ -24,7 +23,7 @@ export const Appbar = () => {
     }, []);
 
     const handleDeposit = () => {
-        if (getUserLogin()) {
+        if (session) {
             router.push("/deposit")
         } else {
             console.log("Please Signin")
@@ -55,14 +54,13 @@ export const Appbar = () => {
                     )}
                 </div>
                 {isMobile ? (
-                    <div className="flex items-center mr-3">
-                        <DarkModeToggle/>
-                        {getUserLogin() ? (
+                    <div className="flex items-center mr-3 gap-4">
+                        {session.data?.user ? (
                             <div className="mr-2">
-                                <GetAccountDetails/>
+                                <UserDetails/>
                             </div>
                         ) : (
-                            <SignButton onClick={() => router.push("/signin")} className="mr-2">SignUp</SignButton>
+                            <SignButton onClick={() => router.push("auth/signin")} className="mr-2">SignUp</SignButton>
                         )}
                         <button onClick={() => setMenuOpen(!menuOpen)}>
                             {menuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -72,23 +70,24 @@ export const Appbar = () => {
                     <div className="flex flex-row justify-center gap-5">
                         <SuccessButton onClick={handleDeposit}>Deposit</SuccessButton>
                         <DarkModeToggle/>
-                        {getUserLogin() ? (
+                        {session.data?.user ? (
                             <div className="flex m-auto">
                               <PrimaryButton onClick={() => router.push(":id/wallet")}>Wallet</PrimaryButton>
                               <UserDetails/>
                             </div>
                         ) : (
-                            <SignButton onClick={() => router.push("/signin")}>SignUp</SignButton>
+                            <SignButton onClick={async () => await signIn() } >SignUp</SignButton>
                         )}
                     </div>
                 )}
             </div>
             {isMobile && menuOpen && (
-                <div className="flex flex-col p-4 bg-black">
+                <div className="flex flex-col p-4 gap-3 text-black bg-white dark:text-white dark:bg-black">
                     <NavItem href="/markets">Markets</NavItem>
                     <NavItem href="/trade/SOL_USDC">Trade</NavItem>
+                    <DarkModeToggle/>
                     <SuccessButton onClick={handleDeposit} className="mt-2">Deposit</SuccessButton>
-                    {getUserLogin() && (
+                    {session.data?.user && (
                         <PrimaryButton onClick={() => router.push(":id/wallet")} className="mt-2">Wallet</PrimaryButton>
                     )}
                 </div>
