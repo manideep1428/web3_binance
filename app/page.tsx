@@ -49,7 +49,7 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-4 sm:hidden">
             {cryptoData.map(eachCrypto => (
               <div key={eachCrypto.id} onClick={() => handleRedirect(eachCrypto.symbol, eachCrypto.image)}
-                className="bg-white text-black dark:bg-black p-4 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-800 transition duration-600">
+                className="bg-white text-black dark:bg-black p-8 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-800 transition duration-600">
                 <div className="flex items-center gap-3 mb-2">
                   <Image src={eachCrypto.image} width={30} height={30} alt={eachCrypto.name} />
                   <span className="font-medium">{eachCrypto.name}</span>
@@ -70,9 +70,9 @@ export default function Home() {
           </div>
         )}
         {!loading && (
-          <table className="w-full text-sm text-left hidden sm:table border-2 dark:text-white sm:border-black">
-          <thead className="text-xl bg-white dark:bg-gray-900 dark:text-white font-semibold">
-            <tr>
+          <table className="w-full text-sm text-left hidden sm:table dark:text-white">
+          <thead className="text-xl h-12 bg-white dark:bg-gray-900 dark:text-white">
+            <tr className="border-b">
               <th scope="col" className="px-6 py-4">Name</th>
               <th scope="col" className="px-6 py-4">Price</th>
               <th scope="col" className="hidden md:table-cell px-6 py-4">Market Cap</th>
