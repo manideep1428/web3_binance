@@ -31,6 +31,7 @@ export default function CryptoDashboard() {
     const fetchAndUpdateCryptoData = async () => {
       if (!isOnline) return
       const data = await getCrypto()
+      //@ts-ignore
       setCryptoData(data)
       setLoading(false)
     }
