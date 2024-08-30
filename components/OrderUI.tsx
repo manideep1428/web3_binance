@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { BuyCrypto } from "@/app/(server)/api";
+import { BuyCrypto } from "@/app/(server)/api/BuyCrypto";
 
 export function OrderUI({ market}: {market: string }) {
     const [amount, setAmount] = useState("");
@@ -9,14 +9,8 @@ export function OrderUI({ market}: {market: string }) {
     const [type, setType] = useState('limit');
     const [image, setImage] = useState("");
     const hanldeBuyCrypto = async () => {
-       const user =  await BuyCrypto( market, amount);
-       if(user === "sucess"){
-        // toast({
-        //     title: "Order is Sucessfully Placed",
-        //     description: "Check At Orders",
-        //   })
-       }
-        
+       const order =  await BuyCrypto( market, amount )
+       console.log(order)
     }
     useEffect(() => {
         if (typeof window !== "undefined") {

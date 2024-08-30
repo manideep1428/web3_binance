@@ -1,4 +1,5 @@
 "use server";
+import { getServerSession } from "next-auth";
 import { prisma } from ".";
 
 interface Props {
@@ -6,10 +7,14 @@ interface Props {
     amount: string;
 }
 
-export async function BuyCrypto(crypto: string, userId: string, amount: string) {
+
+export async function BuyCrypto(crypto: string, amount: string) {
+    const session  = await getServerSession()
+    const emailId =  session?.user?.email
     try {
         const user = await prisma.user.findFirst({
-            where: { id: userId },
+            //@ts-ignore
+            where: { email: emailId },
         });
         if (!user) {
             return "User Not Found";
@@ -33,7 +38,7 @@ export async function BuyCrypto(crypto: string, userId: string, amount: string) 
                 data: {
                     amount,
                     status: "Buy",
-                    userId: userId,
+                    userId: user.id,
                     CryptoId: cryptoOrder.id,
                 },
             });
