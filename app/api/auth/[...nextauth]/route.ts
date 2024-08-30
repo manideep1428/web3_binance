@@ -46,12 +46,6 @@ const handler = NextAuth({
       }
       return true;
     },
-    async authorize({ user, account, profile }) {
-      console.log(user);
-      console.log(account);
-      console.log(profile);
-      return true;
-    },
     async session({ session, token }) {
       if (session.user) {
         //@ts-ignore
