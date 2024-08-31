@@ -28,7 +28,7 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ account, user }) {
       if (!user.email) {
-        return false; // Instead of throwing an error, return false to prevent sign in
+        return false; 
       }
       const existingUser = await prisma.user.findUnique({
         where: {
@@ -47,15 +47,12 @@ const handler = NextAuth({
       return true;
     },
     async session({ session, token }) {
-      if (session.user) {
-        //@ts-ignore
-        session.user.id = token.sub;
-      }
-      return session;
+      console.log(token)
+      return session
     },
   },
   pages: {
-    signIn: '/auth/signIn',
+    signIn: '/auth/signin',
   },
 });
 

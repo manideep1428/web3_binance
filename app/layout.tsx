@@ -2,8 +2,8 @@
 import { SessionProvider } from 'next-auth/react'
 import './globals.css'
 import { Appbar } from '@/components/Appbar'
-import DarkModeToggle from '../components/DarkModeToggle'
 import { ThemeProvider } from './themeProvider'
+import NextTopLoader from 'nextjs-toploader';
 export default function RootLayout({
   children,
 }: {
@@ -20,6 +20,7 @@ export default function RootLayout({
             disableTransitionOnChange
             >
            <Appbar/> 
+           <NextTopLoader/>
            {children}
            </ThemeProvider> 
           </SessionProvider>

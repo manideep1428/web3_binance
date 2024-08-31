@@ -44,7 +44,7 @@ export const Appbar = () => {
             <div className="flex justify-between items-center p-2">
                 <div className="flex items-center">
                     <div className="text-xl pl-4 cursor-pointer font-semibold dark:text-white" onClick={() => router.push('/')}>
-                        Exchange
+                       <i> Learn Web3 </i>
                     </div>
                     {!isMobile && (
                         <div className="flex m-auto gap-6 p-4">
@@ -60,7 +60,7 @@ export const Appbar = () => {
                                 <UserDetails/>
                             </div>
                         ) : (
-                            <SignButton onClick={() => router.push("auth/signin")} className="mr-2">SignUp</SignButton>
+                            <SignButton onClick={() => router.push("auth/signIn")} className="mr-2">Login</SignButton>
                         )}
                         <button onClick={() => setMenuOpen(!menuOpen)}>
                             {menuOpen ? <X size={24} /> : <Menu size={24} />}
