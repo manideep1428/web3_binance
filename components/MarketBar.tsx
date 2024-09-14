@@ -7,7 +7,6 @@ import { SignalingManager } from "@/app/utils/SignalingManager";
 
 export const MarketBar = ({market}: {market: string}) => {
     const [ticker, setTicker] = useState<TickerProps | null>(null);
-    // console.log(ticker?.lastPrice)
     useEffect(() => {
         getTicker(market).then(setTicker);
         SignalingManager.getInstance().registerCallback("ticker", (data: Partial<TickerProps>)  =>  setTicker(prevTicker => ({

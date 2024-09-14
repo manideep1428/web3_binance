@@ -1,29 +1,23 @@
 "use client";
-import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
-import { PrimaryButton, SignButton, SuccessButton } from "./core/Button"
-import { useRouter } from "next/navigation";
-import { Menu, X  } from 'lucide-react'; 
+
+import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { PrimaryButton, SuccessButton } from "./core/Button"
+import { Menu, X } from 'lucide-react'; 
 import UserDetails from "./UserDetails";
 import DarkModeToggle from "./DarkModeToggle";
 import { signIn, useSession } from "next-auth/react";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 
 export const Appbar = () => {
     const route = usePathname();
     const router = useRouter();
-    const [isMobile, setIsMobile] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const session = useSession();
 
-    useEffect(() => {
-        const checkIfMobile = () => setIsMobile(window.innerWidth < 768);
-        checkIfMobile();
-        window.addEventListener('resize', checkIfMobile);
-        return () => window.removeEventListener('resize', checkIfMobile);
-    }, []);
-
     const handleDeposit = () => {
-        if (session) {
+        if (session.data?.user) {
             router.push("/deposit")
         } else {
             console.log("Please Signin")
@@ -40,49 +34,45 @@ export const Appbar = () => {
     );
 
     return (
-        <div className="text-black bg-white  dark:text-white dark:bg-black  border-b border-slate-800">
+        <div className="text-black bg-white dark:text-white dark:bg-black border-b border-slate-800">
             <div className="flex justify-between items-center p-2">
                 <div className="flex items-center">
                     <div className="text-xl pl-4 cursor-pointer font-semibold dark:text-white" onClick={() => router.push('/')}>
                        <i> Learn Web3 </i>
                     </div>
-                    {!isMobile && (
-                        <div className="flex m-auto gap-6 p-4">
-                            <NavItem href="/markets">Markets</NavItem>
-                            <NavItem href="/trade/SOL_USDC">Trade</NavItem>
+                    <div className="hidden md:flex m-auto gap-6 p-4">
+                        <NavItem href="/markets">Markets</NavItem>
+                        <NavItem href="/trade/SOL_USDC">Trade</NavItem>
+                    </div>
+                </div>
+                <div className="md:hidden flex items-center mr-3 gap-4">
+                    {session.data?.user ? (
+                        <div className="mr-2">
+                            <UserDetails/>
                         </div>
+                    ) : (
+                        <Button onClick={() => router.push("auth/sign-in")} className="mr-2">Login</Button>
+                    )}
+                    <button onClick={() => setMenuOpen(!menuOpen)}>
+                        {menuOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
+                </div>
+                <div className="hidden md:flex flex-row justify-center gap-5">
+                    <SuccessButton onClick={handleDeposit}>Deposit</SuccessButton>
+                    <Input type="search" placeholder="Search markets" className="max-w-sm" />
+                    <DarkModeToggle/>
+                    {session.data?.user ? (
+                        <div className="flex m-auto gap-2">
+                          <PrimaryButton onClick={() => router.push(":id/wallet")}>Wallet</PrimaryButton>
+                          <UserDetails/>
+                        </div>
+                    ) : (
+                        <Button onClick={async () => await signIn("google") } >Login</Button>
                     )}
                 </div>
-                {isMobile ? (
-                    <div className="flex items-center mr-3 gap-4">
-                        {session.data?.user ? (
-                            <div className="mr-2">
-                                <UserDetails/>
-                            </div>
-                        ) : (
-                            <SignButton onClick={() => router.push("auth/signIn")} className="mr-2">Login</SignButton>
-                        )}
-                        <button onClick={() => setMenuOpen(!menuOpen)}>
-                            {menuOpen ? <X size={24} /> : <Menu size={24} />}
-                        </button>
-                    </div>
-                ) : (
-                    <div className="flex flex-row justify-center gap-5">
-                        <SuccessButton onClick={handleDeposit}>Deposit</SuccessButton>
-                        <DarkModeToggle/>
-                        {session.data?.user ? (
-                            <div className="flex m-auto">
-                              <PrimaryButton onClick={() => router.push(":id/wallet")}>Wallet</PrimaryButton>
-                              <UserDetails/>
-                            </div>
-                        ) : (
-                            <SignButton onClick={async () => await signIn() } >SignUp</SignButton>
-                        )}
-                    </div>
-                )}
             </div>
-            {isMobile && menuOpen && (
-                <div className="flex flex-col p-4 gap-3 text-black bg-white dark:text-white dark:bg-black">
+            {menuOpen && (
+                <div className="md:hidden flex flex-col p-4 gap-3 text-black bg-white dark:text-white dark:bg-black">
                     <NavItem href="/markets">Markets</NavItem>
                     <NavItem href="/trade/SOL_USDC">Trade</NavItem>
                     <DarkModeToggle/>

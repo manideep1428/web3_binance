@@ -9,51 +9,34 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 
-export default function SignUp() {
+export default function SignIn() {
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const { register, handleSubmit, formState: { errors } } = useForm()
 
   const onSubmit = async (data: any) => {
-    const response = await fetch('/api/auth/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+    const result = await signIn('credentials', {
+      email: data.email,
+      password: data.password,
+      redirect: false,
     })
 
-    const result = await response.json()
-
-    if (response.ok) {
-      const signInResult = await signIn('credentials', {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-      })
-
-      if (signInResult?.error) {
-        setError(signInResult.error)
-      } else {
-        router.push('/dashboard') 
-      }
+    if (result?.error) {
+      setError(result.error)
     } else {
-      setError(result.message)
+      router.push('/') 
     }
   }
 
   return (
     <Card className="w-[350px] mx-auto mt-10">
       <CardHeader>
-        <CardTitle>Sign Up</CardTitle>
-        <CardDescription>Create a new account</CardDescription>
+        <CardTitle>Sign In</CardTitle>
+        <CardDescription>Enter your credentials to access your account</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" {...register('name', { required: 'Name is required' })} />
-              {errors.name && <span className="text-red-500">{errors.name.message as string}</span>}
-            </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" {...register('email', { required: 'Email is required' })} />
@@ -66,12 +49,12 @@ export default function SignUp() {
             </div>
           </div>
           {error && <p className="text-red-500 mt-4">{error}</p>}
-          <Button className="w-full mt-4" type="submit">Sign Up</Button>
+          <Button className="w-full mt-4" type="submit">Sign In</Button>
         </form>
       </CardContent>
       <CardFooter>
         <p className="text-sm text-center w-full">
-          Already have an account? <a href="/auth/signin" className="text-blue-500 hover:underline">Sign In</a>
+          {`Don't have an account? `}<a href="/auth/signup" className="text-blue-500 hover:underline">Sign Up</a>
         </p>
       </CardFooter>
     </Card>

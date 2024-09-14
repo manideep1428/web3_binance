@@ -7,6 +7,8 @@ export function OrderUI({ market}: {market: string }) {
     const [amount, setAmount] = useState("");
     const [activeTab, setActiveTab] = useState('buy');
     const [type, setType] = useState('limit');
+    const [buy , setBuy]  = useState<boolean>(true);
+    const [sell , setSell]  = useState<boolean>(false)
     const [image, setImage] = useState("");
     const hanldeBuyCrypto = async () => {
        const order =  await BuyCrypto( market, amount )
