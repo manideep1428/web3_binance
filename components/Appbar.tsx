@@ -58,7 +58,7 @@ export const Appbar = () => {
                     </button>
                 </div>
                 <div className="hidden md:flex flex-row justify-center gap-5">
-                    <SuccessButton onClick={handleDeposit}>Deposit</SuccessButton>
+                    <Button onClick={handleDeposit}>Deposit</Button>
                     <Input type="search" placeholder="Search markets" className="max-w-sm" />
                     <DarkModeToggle/>
                     {session.data?.user ? (

@@ -33,7 +33,7 @@ export default function SignUp() {
       if (signInResult?.error) {
         setError(signInResult.error)
       } else {
-        router.push('/dashboard') 
+        router.push('/') 
       }
     } else {
       setError(result.message)
