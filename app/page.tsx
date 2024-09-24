@@ -1,16 +1,21 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Bitcoin, LineChart, Lock, Zap } from "lucide-react";
-import { signIn } from "next-auth/react";
+import { ArrowRight, Bitcoin, LineChart, LockKeyholeOpen , BrainCircuit} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, useAnimationControls } from "framer-motion";
 import { useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 export default function CryptoLanding() {
   const controls = useAnimationControls();
   const router = useRouter();
+  const session = useSession();
+
+  if(session.status === "authenticated") {
+    router.push("/markets");
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -156,21 +161,21 @@ export default function CryptoLanding() {
               {[
                 {
                   icon: LineChart,
-                  title: "Real-time Trading",
+                  title: "Real-time Trading ",
                   description:
-                    "Execute trades instantly with our advanced trading engine.",
+                    "Trade with Dummy cash to learn about crypto and trading.",
                 },
                 {
-                  icon: Lock,
-                  title: "Secure Storage",
+                  icon: LockKeyholeOpen,
+                  title: "Open Source",
                   description:
-                    "Your assets are protected with state-of-the-art security measures.",
+                    "It's is an OpenSource Project . So ,You have full control over your data and assets",
                 },
                 {
-                  icon: Zap,
-                  title: "Lightning Fast",
+                  icon: BrainCircuit,
+                  title: "AI-powered",
                   description:
-                    "Experience rapid transactions and minimal latency.",
+                    "It AI powered you can track the trading stratergies and train the model with that data",
                 },
               ].map((feature, index) => (
                 <motion.div
