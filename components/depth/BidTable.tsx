@@ -7,15 +7,15 @@ interface BidProps {
 export function Bid({ bids }: BidProps) {
   const sortedBids = Array.from(bids.entries())
     .sort((a, b) => parseFloat(b[0]) - parseFloat(a[0]))
-    .slice(0, 10);
+    .slice(0, 7);
 
   const maxQuantity = Math.max(...sortedBids.map(([_, quantity]) => parseFloat(quantity)));
 
   return (
     <Table className="w-full max-w-xs mx-auto text-sm">
-      <TableBody className="border border-gray-200 dark:border-gray-700 rounded-sm">
+      <TableBody className="border border-none rounded-sm">
         {sortedBids.map(([price, quantity]) => (
-          <TableRow key={price} className="relative">
+          <TableRow key={price} className="relative border-none">
             <TableCell className="py-1 px-2 text-right text-green-500">
               {parseFloat(price).toFixed(2)}
             </TableCell>

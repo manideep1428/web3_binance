@@ -12,13 +12,13 @@ interface AskProps {
 export function Ask({ asks }: AskProps) {
   const sortedAsks = Array.from(asks.entries())
     .sort((a, b) => parseFloat(b[0]) - parseFloat(a[0]))
-    .slice(0, 10)
+    .slice(0, 7)
     .map(([price, quantity]): AskOrder => ({ price, quantity }));
 
   const maxQuantity = Math.max(...sortedAsks.map(ask => parseFloat(ask.quantity)));
 
   return (
-    <Table className="w-full text-center border-2 border-gray-200 dark:border-gray-700 rounded-lg">
+    <Table className="w-full text-center  border-none dark:border-gray-700 ">
       <TableHeader>
         <TableRow>
           <TableHead className="text-center">Price</TableHead>
@@ -27,7 +27,7 @@ export function Ask({ asks }: AskProps) {
       </TableHeader>
       <TableBody>
         {sortedAsks.map((ask) => (
-          <TableRow key={ask.price} className="relative">
+          <TableRow key={ask.price} className="relative border-none">
             <TableCell className="text-red-500">{parseFloat(ask.price).toFixed(2)}</TableCell>
             <TableCell>{parseFloat(ask.quantity).toFixed(4)}</TableCell>
             <div 

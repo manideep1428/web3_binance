@@ -98,7 +98,7 @@ export default function CryptoLanding() {
                     animate={controls}
                     className="inline-block bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent bg-300% relative"
                   >
-                    {"Welcome to WebCrypto.ai".split("").map((char, index) => (
+                    {" WebCrypto.ai".split("").map((char, index) => (
                       <motion.span
                         key={index}
                         initial={{ opacity: 0 }}

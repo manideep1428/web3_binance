@@ -11,8 +11,8 @@ import { MarketBar } from "@/components/MarketBar";
 import TradeViewChart from "@/components/TradeView";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TradeViewChartSkeleton } from "@/components/Skeletons/TradingViewSkeleton";
-import { MarketBarSkeleton } from "@/components/Skeletons/MarketBarSkeleton";
 import { AskSkeleton } from "@/components/Skeletons/AskBidSkeleton";
+import useOnlineStatus from "@/hooks/onlineChecker";
 
 type Order = [string, string];
 type OrderBookUpdate = {
@@ -32,6 +32,7 @@ type OrderBookState = {
 
 export default function Markets() {
   const { market } = useParams();
+  const  isOnline  = useOnlineStatus();
   const [orderBook, setOrderBook] = useState<OrderBookState>({
     bids: new Map(),
     asks: new Map(),
