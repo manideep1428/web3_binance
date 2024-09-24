@@ -1,93 +1,143 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import Image from "next/image"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Card, CardContent } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-
-async function BuyCrypto(market: string, amount: string) {
-  // Placeholder for API call
-  console.log(`Buying ${amount} of ${market}`)
-  return { success: true }
-}
+import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { BuyCrypto } from "@/app/(server)/api/BuyCrypto";
+import { sellCrypto } from "@/app/(server)/api/SellCrypto";
+import { toast } from "./ui/use-toast";
+import { ToastAction } from "@radix-ui/react-toast";
+import { useRouter } from "next/navigation";
 
 export function OrderUI({ market }: { market: string }) {
-  const [price, setPrice] = useState("")
-  const [quantity, setQuantity] = useState("")
-  const [activeTab, setActiveTab] = useState("buy")
-  const [orderType, setOrderType] = useState("limit")
-  const [image, setImage] = useState("")
-  const [marketPrice, setMarketPrice] = useState(0)
-  const ws = useRef<WebSocket | null>(null)
+  const [price, setPrice] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [activeTab, setActiveTab] = useState("buy");
+  const [orderType, setOrderType] = useState("limit");
+  const [image, setImage] = useState("");
+  const [marketPrice, setMarketPrice] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const ws = useRef<WebSocket | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedImage = localStorage.getItem("imageUrl")
-      if (storedImage) setImage(storedImage)
+      const storedImage = localStorage.getItem("imageUrl");
+      if (storedImage) setImage(storedImage);
     }
 
     // Initialize WebSocket connection
-    ws.current = new WebSocket(`wss://stream.binance.com:9443/ws/${market.toLowerCase()}@ticker`)
+    ws.current = new WebSocket(
+      `wss://stream.binance.com:9443/ws/${market.toLowerCase()}@ticker`
+    );
 
     ws.current.onmessage = (event) => {
-      const data = JSON.parse(event.data)
-      setMarketPrice(parseFloat(data.c))
-    }
+      const data = JSON.parse(event.data);
+      setMarketPrice(parseFloat(data.c));
+    };
 
     return () => {
       if (ws.current) {
-        ws.current.close()
+        ws.current.close();
       }
-    }
-  }, [market])
+    };
+  }, [market]);
 
   const handleOrder = async () => {
-    if (activeTab === "buy") {
-      const order = await BuyCrypto(market, quantity)
-      console.log(order)
-    } else {
-      console.log(`Selling ${quantity} of ${market}`)
+    try {
+      if (activeTab === "buy") {
+        const response = await BuyCrypto(market, quantity);
+        if(response === "Success"){
+          toast({
+            title: "Order placed",
+            description: `You have successfully placed a buy order for ${quantity} ${market} at ${price} USD.`,
+            action: (
+              <ToastAction
+                altText="See the order details"
+                onClick={() => router.push("/orders")}
+              >
+                {" "}
+                Open Order
+              </ToastAction>
+            ),
+          });
+        }
+      } else if (activeTab === "sell") {
+        const res = await sellCrypto(market, quantity);
+        if(res === "Done"){
+          toast({
+            title: "Order Placed",
+            description: `You have successfully sold an order for ${quantity} ${market} at ${price} USD.`,
+          });
+        }
+      }
+    } catch (error) {
+      toast({
+        title:"Error Occcured",
+        description:"Please Try again",
+        variant:"destructive",
+        action :(
+          <ToastAction altText="try again"> Try again </ToastAction>
+        )
+      })
     }
-  }
+  };
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newPrice = e.target.value
-    setPrice(newPrice)
+    const newPrice = e.target.value;
+    setPrice(newPrice);
     if (newPrice && quantity) {
-      const newQuantity = (parseFloat(quantity) * marketPrice / parseFloat(newPrice)).toFixed(8)
-      setQuantity(newQuantity)
+      const newQuantity = (
+        (parseFloat(quantity) * marketPrice) /
+        parseFloat(newPrice)
+      ).toFixed(8);
+      setQuantity(newQuantity);
     }
-  }
+  };
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newQuantity = e.target.value
-    setQuantity(newQuantity)
+    const newQuantity = e.target.value;
+    setQuantity(newQuantity);
     if (newQuantity && price) {
-      const newPrice = (parseFloat(price) * parseFloat(newQuantity) / parseFloat(quantity)).toFixed(8)
-      setPrice(newPrice)
+      const newPrice = (
+        (parseFloat(price) * parseFloat(newQuantity)) /
+        parseFloat(quantity)
+      ).toFixed(8);
+      setPrice(newPrice);
     }
-  }
+  };
 
   const calculateFee = () => {
-    const total = parseFloat(price) * parseFloat(quantity)
-    return isNaN(total) ? "0.00000000" : (total * 0.002).toFixed(8) // 0.2% fee
-  }
+    const total = parseFloat(price) * parseFloat(quantity);
+    return isNaN(total) ? "0.00000000" : (total * 0.002).toFixed(8); // 0.2% fee
+  };
 
   const calculateTotal = () => {
-    const total = parseFloat(price) * parseFloat(quantity)
-    return isNaN(total) ? "0.00" : total.toFixed(2)
-  }
+    const total = parseFloat(price) * parseFloat(quantity);
+    return isNaN(total) ? "0.00" : total.toFixed(2);
+  };
 
   return (
     <Card className="w-full max-w-md mx-auto font-bold p-4 border-none rounded-none">
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="buy" className="data-[state=active]:bg-green-500 data-[state=active]:text-white">Buy</TabsTrigger>
-          <TabsTrigger value="sell" className="data-[state=active]:bg-red-500 data-[state=active]:text-white">Sell</TabsTrigger>
+          <TabsTrigger
+            value="buy"
+            className="data-[state=active]:bg-green-500 data-[state=active]:text-white"
+          >
+            Buy
+          </TabsTrigger>
+          <TabsTrigger
+            value="sell"
+            className="data-[state=active]:bg-red-500 data-[state=active]:text-white"
+          >
+            Sell
+          </TabsTrigger>
         </TabsList>
         <CardContent className="pt-6">
           <div className="space-y-4">
@@ -98,13 +148,13 @@ export function OrderUI({ market }: { market: string }) {
             <div>
               <Label htmlFor="orderType">Order Type</Label>
               <div className="flex gap-4 mt-2">
-                <Button 
+                <Button
                   variant={orderType === "limit" ? "default" : "outline"}
                   onClick={() => setOrderType("limit")}
                 >
                   Limit
                 </Button>
-                <Button 
+                <Button
                   variant={orderType === "market" ? "default" : "outline"}
                   onClick={() => setOrderType("market")}
                 >
@@ -140,7 +190,9 @@ export function OrderUI({ market }: { market: string }) {
                   className="pr-12"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  {image && <Image src={image} alt="Crypto" width={24} height={24} />}
+                  {image && (
+                    <Image src={image} alt="Crypto" width={24} height={24} />
+                  )}
                 </div>
               </div>
             </div>
@@ -155,11 +207,21 @@ export function OrderUI({ market }: { market: string }) {
                 </Button>
               ))}
             </div>
-            <Button 
-              onClick={handleOrder} 
-              className={activeTab === "buy" ? "w-full bg-green-500 hover:bg-green-600" : "w-full bg-red-500 hover:bg-red-600"}
+            <Button
+              onClick={handleOrder}
+              className={
+                activeTab === "buy"
+                  ? "w-full bg-green-500 hover:bg-green-600"
+                  : "w-full bg-red-500 hover:bg-red-600"
+              }
             >
-              {activeTab === "buy" ? "Buy" : "Sell"}
+              {activeTab === "buy"
+                ? loading
+                  ? ""
+                  : "Buy"
+                : loading
+                ? ""
+                : "Sell"}
             </Button>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
@@ -178,5 +240,5 @@ export function OrderUI({ market }: { market: string }) {
         </CardContent>
       </Tabs>
     </Card>
-  )
+  );
 }

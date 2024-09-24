@@ -90,7 +90,7 @@ model Crypto {
   id             Int     @id @default(autoincrement())
   name           String
   buyAt          String
-  soldAt         String?
+  soldAt         String
   timeBuyAt      String
   amount         String
   timeSoldAt     String?
