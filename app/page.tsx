@@ -9,7 +9,6 @@ import { motion, useAnimationControls } from "framer-motion"
 import { useEffect } from "react"
 
 export default function CryptoLanding() {
-  const router = useRouter();
   const controls = useAnimationControls();
 
   const containerVariants = {
