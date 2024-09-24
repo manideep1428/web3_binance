@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
 import { ArrowDown, ArrowUp } from "lucide-react"
@@ -25,7 +25,7 @@ export default function CryptoList() {
   const [activeTab, setActiveTab] = useState("all")
   const router = useRouter()
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const data = await getCrypto()
       const formattedData: CryptoData[] = data.map((item: any) => ({
@@ -41,7 +41,7 @@ export default function CryptoList() {
     } catch (error) {
       console.error("Error fetching data:", error)
     }
-  }
+  }, [])
 
   const formatVolume = (volume: number): string => {
     if (volume >= 1e12) return `${(volume / 1e12).toFixed(2)}T`
@@ -61,7 +61,7 @@ export default function CryptoList() {
     fetchData()
     const interval = setInterval(fetchData, 2000)
     return () => clearInterval(interval)
-  }, [])
+  }, [fetchData])
 
   const sortData = (column: keyof CryptoData) => {
     if (column === sortColumn) {
