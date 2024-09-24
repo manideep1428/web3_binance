@@ -1,5 +1,6 @@
 "use server";
-import { prisma } from ".";
+
+import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 
 export async function sellCrypto(crypto: string, amount: string) {

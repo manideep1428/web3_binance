@@ -1,6 +1,6 @@
 "use server";
+import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { prisma } from ".";
 
 export async function BuyCrypto(crypto: string, amount: string) {
   console.log("Buy Server");
