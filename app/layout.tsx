@@ -1,7 +1,6 @@
 'use client'
 import { SessionProvider } from 'next-auth/react'
 import './globals.css'
-import { Appbar } from '@/components/Appbar'
 import { ThemeProvider } from './themeProvider'
 import NextTopLoader from 'nextjs-toploader';
 export default function RootLayout({
@@ -9,6 +8,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+
   return (
       <html lang="en">
         <body>
@@ -19,7 +19,6 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
             >
-           <Appbar/> 
            <NextTopLoader/>
            {children}
            </ThemeProvider> 

@@ -1,141 +1,106 @@
-"use client"
+'use client'
 
-import { useEffect, useState, createContext, useContext } from "react"
+import { Button } from "@/components/ui/button"
+import { ArrowRight, Bitcoin, DollarSign, LineChart, Lock, Zap } from "lucide-react"
+import { signIn } from "next-auth/react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
-import Image from "next/image"
-import { getCrypto } from "@/app/utils/ServerProps"
-import { formatNumber } from "@/app/utils/Algorithms"
-import useOnlineStatus from "@/hooks/onlineChecker"
-import { Card, CardContent } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Skeleton } from "@/components/ui/skeleton"
-import { ArrowUpDown } from "lucide-react"
 
-type CryptoData = {
-  id: string
-  symbol: string
-  name: string
-  image: string
-  current_price: number
-  market_cap: number
-  market_cap_change_24h: number
-  price_change_percentage_24h: number
-}
-
-const CryptoContext = createContext<{ cryptoData: CryptoData[], setCryptoData: React.Dispatch<React.SetStateAction<CryptoData[]>> } | null>(null)
-
-export default function CryptoDashboard() {
-  const isOnline = useOnlineStatus()
-  const [cryptoData, setCryptoData] = useState<CryptoData[]>([])
-  const [loading, setLoading] = useState(true)
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
-  const router = useRouter()
-
-  useEffect(() => {
-    const fetchAndUpdateCryptoData = async () => {
-      if (!isOnline) return
-      const data = await getCrypto()
-      setCryptoData(data)
-      setLoading(false)
-    }
-
-    fetchAndUpdateCryptoData()
-    const interval = setInterval(fetchAndUpdateCryptoData, 10000)
-    return () => clearInterval(interval)
-  }, [isOnline])
-
-  const handleRedirect = (symbol: string, imageUrl: string) => {
-    localStorage.setItem("imageUrl", imageUrl)
-    router.push(`/trade/${symbol.toUpperCase()}_USDC`)
-  }
-
-  const handleSort = () => {
-    const newOrder = sortOrder === 'asc' ? 'desc' : 'asc'
-    setSortOrder(newOrder)
-    const sortedData = [...cryptoData].sort((a, b) => {
-      return newOrder === 'asc' 
-        ? a.price_change_percentage_24h - b.price_change_percentage_24h
-        : b.price_change_percentage_24h - a.price_change_percentage_24h
-    })
-    setCryptoData(sortedData)
-  }
-
-  if (!isOnline) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Card className="w-full max-w-md">
-          <CardContent className="p-6 text-center text-2xl font-semibold">
-            Sorry, you are not connected to the internet.
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
+export default function CryptoLanding() {
+  const router = useRouter();
   return (
-    <CryptoContext.Provider value={{ cryptoData, setCryptoData }}>
-      <main className="container mx-auto p-4 min-h-screen">
-        <Card className="w-full overflow-hidden bg-gray-100 dark:bg-black">
-          <CardContent className="p-6">
-            {loading ? (
-              <div className="space-y-6">
-                {[...Array(10)].map((_, i) => (
-                  <div key={i} className="flex items-center space-x-6">
-                    <Skeleton className="h-16 w-16 rounded-full" />
-                    <div className="space-y-3 flex-1">
-                      <Skeleton className="h-6 w-3/4" />
-                      <Skeleton className="h-4 w-1/2" />
-                    </div>
-                  </div>
-                ))}
+    <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <header className="px-4 lg:px-6 h-14 flex items-center border-b border-gray-200 dark:border-gray-800">
+        <Link className="flex items-center justify-center" href="#">
+          <Bitcoin className="h-6 w-6 text-yellow-500" />
+          <span className="ml-2 font-bold">WebCrypto.ai</span>
+        </Link>
+        <nav className="ml-auto flex gap-4 sm:gap-6">
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
+            Features
+          </Link>
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
+            Pricing
+          </Link>
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
+            About
+          </Link>
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
+            Contact
+          </Link>
+        </nav>
+      </header>
+      <main className="flex-1">
+        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-black text-white">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
+                  Welcome to WebCrypto.ai
+                </h1>
+                <p className="mx-auto max-w-[700px] text-gray-400 md:text-xl">
+                  Your gateway to learn cryptocurre ncies. Trade, invest, and grow your digital assets with help of ai.
+                </p>
               </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table className="w-full">
-                  <TableHeader>
-                    <TableRow className="hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200">
-                      <TableHead className="text-lg font-bold">Name</TableHead>
-                      <TableHead className="text-lg font-bold">Price</TableHead>
-                      <TableHead className="text-lg font-bold hidden md:table-cell">Market Cap</TableHead>
-                      <TableHead 
-                        className="text-lg font-bold cursor-pointer"
-                        onClick={handleSort}
-                      >
-                        24h Change
-                        <ArrowUpDown className="ml-2 h-4 w-4 inline" />
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {cryptoData.map(crypto => (
-                      <TableRow 
-                        key={crypto.id} 
-                        onClick={() => handleRedirect(crypto.symbol, crypto.image)}
-                        className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
-                      >
-                        <TableCell className="py-4 px-2 bottom-none">
-                          <div className="flex items-center gap-2">
-                            <Image src={crypto.image} width={40} height={40} alt={crypto.name} className="rounded-full" />
-                            <span className="text-xl font-semibold">{crypto.name}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-xl font-bold">${crypto.current_price.toLocaleString()}</TableCell>
-                        <TableCell className="hidden md:table-cell text-lg">${formatNumber(crypto.market_cap)}</TableCell>
-                        <TableCell className="text-lg font-semibold">
-                          <span className={crypto.price_change_percentage_24h < 0 ? 'text-red-500' : 'text-green-500'}>
-                            {crypto.price_change_percentage_24h > 0 ? '+' : ''}
-                            {crypto.price_change_percentage_24h.toFixed(2)}%
-                          </span>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+              <div className="space-x-4">
+                <Button  onClick={()=>signIn('google')} className="bg-yellow-500 text-black hover:bg-yellow-600">Get Started</Button>
+                <Button variant="outline" className="text-black border-white hover:bg-white hover:text-black">Learn More</Button>
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </div>
+          </div>
+        </section>
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
+          <div className="container px-4 md:px-6">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">Our Features</h2>
+            <div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
+              <div className="flex flex-col items-center space-y-4 text-center">
+                <LineChart className="h-12 w-12 text-yellow-500" />
+                <h3 className="text-xl font-bold">Real-time Trading</h3>
+                <p className="text-gray-500 dark:text-gray-400">Execute trades instantly with our advanced trading engine.</p>
+              </div>
+              <div className="flex flex-col items-center space-y-4 text-center">
+                <Lock className="h-12 w-12 text-yellow-500" />
+                <h3 className="text-xl font-bold">Secure Storage</h3>
+                <p className="text-gray-500 dark:text-gray-400">Your assets are protected with state-of-the-art security measures.</p>
+              </div>
+              <div className="flex flex-col items-center space-y-4 text-center">
+                <Zap className="h-12 w-12 text-yellow-500" />
+                <h3 className="text-xl font-bold">Lightning Fast</h3>
+                <p className="text-gray-500 dark:text-gray-400">Experience rapid transactions and minimal latency.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+              <div className="space-y-4">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Start Your Crypto Journey</h2>
+                <p className="text-gray-500 dark:text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  Join thousands of traders and investors who trust CryptoHub for their cryptocurrency needs. Get started in minutes.
+                </p>
+              </div>
+              <div className="flex flex-col space-y-4">
+                <Button onClick={()=>signIn('google')} className="bg-yellow-500 text-black hover:bg-yellow-600 max-w-lg">
+                  Create Account
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
-    </CryptoContext.Provider>
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t border-gray-200 dark:border-gray-800">
+        <p className="text-xs text-gray-500 dark:text-gray-400">© 2024 WebCrypto.ai. All rights reserved.</p>
+        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+          <Link className="text-xs hover:underline underline-offset-4" href="#">
+            Terms of Service
+          </Link>
+          <Link className="text-xs hover:underline underline-offset-4" href="#">
+            Privacy
+          </Link>
+        </nav>
+      </footer>
+    </div>
   )
 }

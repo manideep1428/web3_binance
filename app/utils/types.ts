@@ -45,11 +45,6 @@ export const orderVefication = zod.object({
     name : zod.string(),
   })
 
-export const loginVerfication = zod.object({
-    username : zod.string().min(6, "Username Atleast 6 characters"),
-    password: zod.string().min(8,"Password Atleast 8 characters"),
-})
-
 export interface SellProps {
     crypto:string
     amount : string
@@ -60,4 +55,31 @@ export interface SellProps {
 export interface AuthProps{
     username:string,
     password:string
+}
+
+
+export interface TickerProps {
+    symbol: string;
+    lastPrice: string;
+    high: string;
+    low: string;
+    volume: string;
+    quoteVolume: string;
+    priceChange: string;
+    priceChangePercent: string;
+}
+
+export interface DepthProps {
+    bids: [string, string][];
+    asks: [string, string][];
+}
+
+export interface KlineProps {
+    openTime: number;
+    open: string;
+    high: string;
+    low: string;
+    close: string;
+    volume: string;
+    closeTime: number;
 }

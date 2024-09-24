@@ -1,8 +1,8 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function getUserLogin() {
@@ -11,6 +11,5 @@ export function getUserLogin() {
     if (userToken !== null) return true;
     return false;
   }
-  return false; 
+  return false;
 }
-

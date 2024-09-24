@@ -1,50 +1,35 @@
+import { Table, TableCell, TableRow, TableBody } from "@/components/ui/table"
 
-export const BidTable = ({ bids }: {bids: [string, string][]}) => {
-    let currentTotal = 0; 
-    const relevantBids = bids.slice(0, 15);
-    const bidsWithTotal: [string, string, number][] = relevantBids.map(([price, quantity]) => [price, quantity, currentTotal += Number(quantity)]);
-    const maxTotal = relevantBids.reduce((acc, [_, quantity]) => acc + Number(quantity), 0);
-
-    return <div>
-        {bidsWithTotal?.map(([price, quantity, total]) => <Bid maxTotal={maxTotal} total={total} key={price} price={price} quantity={quantity} />)}
-    </div>
+interface BidProps {
+  bids: Map<string, string>;
 }
 
-function Bid({ price, quantity, total, maxTotal }: { price: string, quantity: string, total: number, maxTotal: number }) {
-    return (
-        <div
-            style={{
-                display: "flex",
-                position: "relative",
-                width: "100%",
-                backgroundColor: "transparent",
-                overflow: "hidden",
-            }}
-        >
-        <div
-            style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                border: "1px solid black",
-                borderRadius: "0px 2px 2px",
-                width: `${(100 * total) / maxTotal}%`,
-                height: "100%",
-                background: "rgba(0, 255, 0, 0.325)",
-                transition: "width 0.3s ease-in-out",
-            }}
-        ></div>
-            <div className={`flex justify-between text-xs w-full dark:text-white `}>
-                <div>
-                    {price}
-                </div>
-                <div>
-                    {quantity}
-                </div>
-                <div>
-                    {total.toFixed(2)}
-                </div>
-            </div>
-        </div>
-    );
+export function Bid({ bids }: BidProps) {
+  const sortedBids = Array.from(bids.entries())
+    .sort((a, b) => parseFloat(b[0]) - parseFloat(a[0]))
+    .slice(0, 10);
+
+  const maxQuantity = Math.max(...sortedBids.map(([_, quantity]) => parseFloat(quantity)));
+
+  return (
+    <Table className="w-full max-w-xs mx-auto text-sm">
+      <TableBody className="border border-gray-200 dark:border-gray-700 rounded-sm">
+        {sortedBids.map(([price, quantity]) => (
+          <TableRow key={price} className="relative">
+            <TableCell className="py-1 px-2 text-right text-green-500">
+              {parseFloat(price).toFixed(2)}
+            </TableCell>
+            <TableCell className="py-1 px-2 text-right">
+              {parseFloat(quantity).toFixed(4)}
+            </TableCell>
+            <div 
+              className="absolute top-0 left-0 h-full bg-green-100 dark:bg-green-900 opacity-25 transition-all duration-300 ease-in-out"
+              style={{ width: `${(parseFloat(quantity) / maxQuantity) * 100}%` }}
+              aria-hidden="true"
+            />
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  )
 }

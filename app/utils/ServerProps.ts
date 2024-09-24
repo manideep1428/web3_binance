@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Depth, KLine, Trade } from "./types";
 
-const BASE_URL = "https://exchange-proxy.100xdevs.com/api/v1";
+const BASE_URL = "https://api.backpack.exchange/api/v1";
 const Market_URL = "https://price-indexer.workers.madlads.com/?ids=solana,usd-coin,pyth-network,jito-governance-token,tether,bonk,helium,helium-mobile,bitcoin,ethereum,dogwifcoin,jupiter-exchange-solana,parcl,render-token,sharky-fi,tensor,wormhole,wen-4,cat-in-a-dogs-world,book-of-meme,raydium,hivemapper,kamino,drift-protocol,nyan,jeo-boden,habibi-sol,io,zeta,mother-iggy,shuffle-2,pepe,shiba-inu,chainlink,uniswap,ondo-finance,holograph,starknet,matic-network,fantom,mon-protocol,blur,worldcoin-wld,polyhedra-network,unagi-token,layerzero"
 
 export async function getTicker(market: string): Promise<any> {
@@ -14,8 +14,13 @@ export async function getTicker(market: string): Promise<any> {
 }
 
 export async function getTickers(): Promise<any[]> {
-    const response = await axios.get(`${BASE_URL}/tickers`);
-    return response.data;
+    try {
+        const response = await axios.get(`${BASE_URL}/tickers`);
+       return response.data;
+    } catch (error) {
+        console.error("THIS IS THE ERROR : ", error);
+        return [];
+    }
 }
 
 
